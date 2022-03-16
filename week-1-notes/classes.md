@@ -32,3 +32,30 @@
 - "this" is a stand-in for the entire object. so when you refer to "this.crust" for ex, you are referring to the crust of the pizza that you are working with at the moment
 - instance = an object created using a particular constructor function
 - if you call super() in your constructor, it will call wherever you are extended to
+
+## Deliverable - Quotes
+
+- Red green refactor - way to build express
+
+## Building services
+
+- there is no constructor for this because there are ONLY going to be static methods (no instances)
+- this class won't have properties
+  For example:
+
+```
+module.exports = class ProfileService {
+ static async create({ username }) {
+   const resp = await fetch (api url);
+   const data = await resp.json();
+   const profile = await Profile.insert({
+     <!-- username, (used to be ...req.body) -->
+     username,
+     quote: data[0].quote,
+   });
+   return profile
+ }
+}
+```
+
+- then you can go back to your controller and await the ProfileService.create(req.body) that takes in the request body as the argument, then res.send(profile)
