@@ -46,5 +46,26 @@
 - authToken() {
   return jwt.sign({...user}, process.env.JWT_SECRET, { expiresIn: '1 day' }) -> because you are referencing your currently signed in user
   }
+
+## Ensure that you are logged in
+
 - in the .get method of user, you want to get the value of the cookie (jwt)
 - cookies are for sending and storing arbitrary data, whereas bearer tokens are specifically for sending authorization data, often encoded as a JWT
+  1. get value from cookie: const { session } = req.cookies
+  2. verify the jwt: const payload = jwt.verify(session, process.env.JWT_SECRET)
+  3. send the payload back up/send the contents of jwt up as a response (res.send(payload))
+- agent essentially creates a cookie jar for these requests to store the cookies from your previous requests. Set this up by doing const agent = request.agent(app)
+- jwt is going to return an expired at time (exp) and issued at time (iat). You can se these to expect.any(Number)
+
+--> send this out to another middleware file ie: authenticate.js because this is where the use rmakes a request to the API sending a cookie along with it (in the subsequent requests step after you have signed in the first time)
+
+- const ONE_DAY_IN_MS = (1000 _ 60 _ 60 \* 24) -> is what you use for maxAge in your cookie method
+- /me end points -> as soon as your react app loads, it can hit this endpoint which lets the react app know if you are signed in already or not
+
+## TDD protecting routes using authenticate middleware
+
+- Create an agent for storing cookies on the requests in this test
+- Create a user to sign in with
+- Try hitting the protected endpoint to ensure it's indeed protected
+- Then, sign in and make the same request
+- with a message that says 'Top secret you should only see if you are logged in' for ex.
