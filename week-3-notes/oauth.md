@@ -41,7 +41,17 @@
      if(!user) {
      user = await User.insert({ username: login, photoUrl: avatar_url })
      }
-     res.send(user);
+     <!-- create the jwt =  -->
+     <!-- httpOnly means you only want it on your server -->
+
+     res.cookie(process.env.COOKIE_NAME, sign(user), {httpOnly: true, maxAge: ONE_DAY_IN_MS} );
      })
      const profileJson = await profileResp.json();
      res.send(profileJson);
+
+3. move your responses out into github utils file -> instead of service because it doesn't have anything to do with the model. There's no state being saved or antyhing important other than a long function to fetch the api
+4. move those newly refactored controller into the UserService services because the controller is only supposed to deal with routes, no other logic
+
+- middleware is what you will do with every request and certain endpoint -> it will always run during a request as part of the life cycle
+
+- services = multiple pieces of functionality that you can use when you want
